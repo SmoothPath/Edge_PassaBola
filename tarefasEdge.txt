@@ -1,0 +1,16 @@
+EDGE
+• Fazer a arquitetura (diagrama gráfico) da solução 
+
+Vídeo (até 3min, link público)
+• Explicar como estamos utilizando IoT na nossa Solução e porquê
+• Explicar conceitos/fundamentos e relevância de IoT
+• Mostrar a arquitetura proposta,
+• Mostrar a instalação e configuração da plataforma Iot => criação de dispositivos virtuais  (VM, Wokwi, FIWARE e WokWi) e protocolos de comunicação (MQTT e HTTP)
+• Demonstração:  coleta de dados, health check e criação da entidade lógica 
+
+Repositório = Readme com todas as informações do projeto
+• Integrantes
+• Descrição do Projeto, 
+• Diagrama e explicação (arquitetura), recursos necessários 
+• Instruções de uso
+Códigos fonte dos dispositivos

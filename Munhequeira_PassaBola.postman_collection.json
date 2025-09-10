@@ -1,0 +1,932 @@
+{
+	"info": {
+		"_postman_id": "8af12321-1427-4b0f-9b04-5f7f2d06bbc8",
+		"name": "FIWARE Descomplicado - Munhequeira",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "179747"
+	},
+	"item": [
+		{
+			"name": "IOT Agent MQTT",
+			"item": [
+				{
+					"name": "1.1 Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}:4041/iot/about",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"about"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Provisioning a Service Group for MQTT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"services\": [\n   {\n     \"apikey\":      \"TEF\",               // Chave de acesso para o serviço (API Key)\n     \"cbroker\":     \"http://{{url}}:1026\", // URL do Orion Context Broker associado ao serviço\n     \"entity_type\": \"Thing\",             // Tipo de entidade associado ao serviço\n     \"resource\":    \"\"                   // Recurso associado ao serviço (pode estar vazio)\n   }\n ]\n}\n"
+						},
+						"url": {
+							"raw": "http://{{url}}:4041/iot/services",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 Health Check Services",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:4041/iot/services",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 Delete a Service Group",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{url}}:4041/iot/services/?resource=&apikey=TEF",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"services",
+								""
+							],
+							"query": [
+								{
+									"key": "resource",
+									"value": "",
+									"description": "The path that the IoT Agent had been listening on"
+								},
+								{
+									"key": "apikey",
+									"value": "TEF"
+								}
+							]
+						},
+						"description": "This example removes a provisioned service group by making a DELETE request to the `/iot/services/` endpoint.\n\nIt means that requests to `http://iot-agent:7896/iot/d?i=<device_id>&k=4jggokgpepnvsb2uv4s40d59ov`\n(where the IoT Agent is listening for **Northbound** communications) should no longer be processed by the IoT Agent. \nThe `apiKey` and `resource` parameters must be supplied in order to identify the service group to be deleted."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Provisioning a Smart Band (Munhequeira)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"devices\": [\n    {\n      \"device_id\": \"munhequeira001\",         // Identificador único do dispositivo\n      \"entity_name\": \"urn:ngsi-ld:Munhequeira:001\",   // Nome da entidade para o dispositivo (formato URN)\n      \"entity_type\": \"Munhequeira\",          // Tipo da entidade (neste caso, \"Munhequeira\")\n      \"protocol\": \"PDI-IoTA-UltraLight\",  // Protocolo usado para a comunicação (no exemplo, PDI-IoTA-UltraLight)\n      \"transport\": \"MQTT\",            // Método de transporte (neste caso, MQTT)\n\n      // Lista de comandos que o dispositivo pode receber\n      \"commands\": [\n        { \"name\": \"alertaOff\", \"type\": \"command\" }  // Comando para desligar o alerta (buzzer)\n      ],\n\n      // Lista de atributos associados ao dispositivo\n      \"attributes\": [\n        { \"object_id\": \"s\", \"name\": \"state\", \"type\": \"Text\" }, // Atributo de estado (Texto) - Ligado/Desligado\n        { \"object_id\": \"b\", \"name\": \"batimento\", \"type\": \"Integer\" },  // Atributo de batimento cardíaco (Inteiro)\n        { \"object_id\": \"t\", \"name\": \"temperatura\", \"type\": \"Float\" },  // Atributo de temperatura corporal (Float)\n        { \"object_id\": \"c\", \"name\": \"calorias\", \"type\": \"Float\" }  // Atributo de calorias gastas (Float)\n      ]\n    }\n  ]\n}\n"
+						},
+						"url": {
+							"raw": "http://{{url}}:4041/iot/devices",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Registering Smart Band Commands",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Munhequeira Commands\", // Descrição do serviço de notificação\n  \"dataProvided\": {\n    \"entities\": [\n      {\n        \"id\": \"urn:ngsi-ld:Munhequeira:001\", \"type\": \"Munhequeira\" // Definição da entidade a ser monitorada\n      }\n    ],\n    \"attrs\": [\"alertaOff\"] // Atributos a serem monitorados (no caso, 'alertaOff')\n  },\n  \"provider\": {\n    \"http\": { \"url\": \"http://{{url}}:4041\" }, // URL do serviço a ser notificado\n    \"legacyForwarding\": true // Indicação para encaminhar notificações de forma legada (se aplicável)\n  }\n}\n"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/registrations",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. List all Devices Provisioned",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:4041/iot/devices",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Sending 'alertaOff' command to the Smart Band",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"alertaOff\": {\n      \"type\" : \"command\",\n      \"value\" : \"\"\n  }\n}"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Result of Heart Rate (Batimento)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							},
+							{
+								"key": "accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs/batimento",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs",
+								"batimento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Result of Body Temperature (Temperatura)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							},
+							{
+								"key": "accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs/temperatura",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs",
+								"temperatura"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "9. Result of Calories (Calorias)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							},
+							{
+								"key": "accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs/calorias",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs",
+								"calorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "10. Delete Smart Band in IoT Agent",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:4041/iot/devices/munhequeira001",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "4041",
+							"path": [
+								"iot",
+								"devices",
+								"munhequeira001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "11. Delete Smart Band in Orion",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Thing",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "STH-Comet",
+			"item": [
+				{
+					"name": "1. Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}:8666/version",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8666",
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Subscribe to Heart Rate (Batimento)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"Notify STH-Comet of all Heart Rate changes\", // Descrição da notificação\r\n  \"subject\": {\r\n    \"entities\": [\r\n      {\r\n        \"id\": \"urn:ngsi-ld:Munhequeira:001\",\r\n        \"type\": \"Munhequeira\"\r\n      }\r\n    ],\n    \"condition\": { \"attrs\": [\"batimento\"] } // Condição para acionar a notificação (alteração de batimento)\r\n  },\r\n  \"notification\": {\r\n    \"http\": {\r\n      \"url\": \"http://{{url}}:8666/notify\" // URL para notificação do STH-Comet\r\n    },\r\n    \"attrs\": [\r\n      \"batimento\" // Atributo a ser notificado (batimento cardíaco)\r\n    ],\r\n    \"attrsFormat\": \"legacy\" // Formato dos atributos a ser notificado (legado)\r\n  }\r\n}"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/subscriptions",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"subscriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Request Heart Rate History (Batimento)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:8666/STH/v1/contextEntities/type/Munhequeira/id/urn:ngsi-ld:Munhequeira:001/attributes/batimento?lastN=30",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8666",
+							"path": [
+								"STH",
+								"v1",
+								"contextEntities",
+								"type",
+								"Munhequeira",
+								"id",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attributes",
+								"batimento"
+							],
+							"query": [
+								{
+									"key": "lastN",
+									"value": "30",
+									"description": "Especifica o número de resultados mais recentes a serem recuperados. Neste caso, está configurado como 30."
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Request Temperature History (Temperatura)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:8666/STH/v1/contextEntities/type/Munhequeira/id/urn:ngsi-ld:Munhequeira:001/attributes/temperatura?lastN=30",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8666",
+							"path": [
+								"STH",
+								"v1",
+								"contextEntities",
+								"type",
+								"Munhequeira",
+								"id",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attributes",
+								"temperatura"
+							],
+							"query": [
+								{
+									"key": "lastN",
+									"value": "30",
+									"description": "Especifica o número de resultados mais recentes a serem recuperados. Neste caso, está configurado como 30."
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orion Context Broker",
+			"item": [
+				{
+					"name": "1.Version",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}:1026/version",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.Create Munhequeira Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"urn:ngsi-ld:Munhequeira:001\",\r\n  \"type\": \"Munhequeira\",\r\n  \"state\": {\r\n  \"type\": \"Text\",\r\n  \"value\": \"on\"\r\n    },\r\n  \"batimento\": {\r\n  \"type\": \"Integer\",\r\n  \"value\": 0\r\n    },\r\n  \"temperatura\": {\r\n  \"type\": \"Float\",\r\n  \"value\": 0.0\r\n    },\r\n  \"calorias\": {\r\n  \"type\": \"Float\",\r\n  \"value\": 0.0\r\n\t}\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities"
+							]
+						},
+						"description": "Cria entidade da munhequeira manualmente"
+					},
+					"response": []
+				},
+				{
+					"name": "3.Get All Entities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.Update Munhequeira Entity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"batimento\": {\r\n  \"type\": \"Integer\",\r\n  \"value\": 75\r\n    },\r\n  \"temperatura\": {\r\n  \"type\": \"Float\",\r\n  \"value\": 36.5\r\n    },\r\n  \"calorias\": {\r\n  \"type\": \"Float\",\r\n  \"value\": 105.3\r\n\t}\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5.Selective_update_batimento",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "85"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs/batimento/value",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs",
+								"batimento",
+								"value"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6.Selective_update_temperatura",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "37.2"
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001/attrs/temperatura/value",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001",
+								"attrs",
+								"temperatura",
+								"value"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7.Delete Munhequeira Entity",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "fiware-service",
+								"value": "smart",
+								"type": "text"
+							},
+							{
+								"key": "fiware-servicepath",
+								"value": "/",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://{{url}}:1026/v2/entities/urn:ngsi-ld:Munhequeira:001",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "1026",
+							"path": [
+								"v2",
+								"entities",
+								"urn:ngsi-ld:Munhequeira:001"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Thing",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

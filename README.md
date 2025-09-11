@@ -112,7 +112,71 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 ## 📎 Links Importantes
 🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
 🎥 [Vídeo Explicativo]()  
-🎥 [Vídeo da Simulação no Wokwi]()  
+🎥 [Vídeo da Simulação no Wokwi]() 
+
+---
+
+## 📖 Instruções de Uso (Simulação no Wokwi)
+
+### 1️⃣ Acessando a Simulação
+1. Abra o link do projeto:  
+   🔗 [Simulação no Wokwi](https://wokwi.com/projects/441652276593761281)  
+2. Clique em **Start Simulation**.  
+3. O ESP32 começará a rodar o código e você poderá visualizar os **logs no Serial Monitor** (à direita da tela).  
+
+---
+
+### 2️⃣ Interagindo com os Sensores
+- **Potenciômetro** → simula batimentos cardíacos.  
+  - Gire o controle no Wokwi para variar os valores (50–120 BPM).  
+- **DHT22** → simula temperatura corporal.  
+  - Clique no sensor no Wokwi e altere os valores de **temperatura**.  
+- **Buzzer** → emite alerta sonoro.  
+  - Quando valores ultrapassarem os limites seguros, o buzzer será ativado automaticamente.  
+
+---
+
+### 3️⃣ Acompanhando os Dados
+- Os dados coletados aparecem no **Serial Monitor** em tempo real:  
+  - Batimentos cardíacos (BPM)  
+  - Temperatura corporal (°C)  
+  - Calorias estimadas (kcal)  
+- Caso os parâmetros saiam da faixa segura → mensagem de alerta é exibida no log + buzzer ativo.  
+
+---
+
+### 4️⃣ Testando Situações
+- **Simular esforço físico**:  
+  - Gire o potenciômetro para valores próximos de 120 BPM.  
+- **Simular febre**:  
+  - Aumente a temperatura do DHT22 para > 38.5°C.  
+- **Simular hipotermia**:  
+  - Reduza a temperatura para < 35.0°C.  
+- **Verificar calorias**:  
+  - Deixe a simulação rodando e acompanhe o cálculo de calorias no Serial Monitor.  
+
+---
+
+### 📊 Limites Seguros dos Parâmetros (simulados)
+
+| Parâmetro              | Faixa Segura              | Alerta Ativado se:      |
+|-------------------------|---------------------------|--------------------------|
+| Batimentos Cardíacos    | 60 – 120 BPM              | < 60 ou > 120 BPM        |
+| Temperatura Corporal    | < 38.0°C                  |  > 38.5°C                |
+
+---
+
+### 5️⃣ Integração com FIWARE 
+
+1. Configure o IP do **broker MQTT** no código.  
+2. Inicie os componentes na VM: Mosquitto, IoT Agent MQTT, Orion e STH-Comet.  
+3. Use o Postman para criar entidades no Orion e acompanhar os dados enviados pelo ESP32.  
+
+---
+
+### 6️⃣ Encerrando a Simulação
+- Clique em **Stop Simulation** no Wokwi.  
+- Todos os dados e logs serão reiniciados ao iniciar novamente.  
 
 ---
 ### 📌 Referências

@@ -44,7 +44,7 @@ Fluxo de dados:
 ### 📊 Diagrama da Arquitetura
 
 
-![Arquitetura do Projeto]()
+![Arquitetura do Projeto](arqMunhe.png)
 
 ### ⚙️ Funcionalidades do Dispositivo
 

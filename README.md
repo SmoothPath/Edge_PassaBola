@@ -168,7 +168,7 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 
 1. Configure o IP do **broker MQTT** no código.  
 2. Inicie os componentes na VM: Mosquitto, IoT Agent MQTT, Orion e STH-Comet.  
-3. Use o Postman para criar entidades no Orion e acompanhar os dados enviados pelo ESP32.  
+3. Instale e importe a [Collection Munhequeira](Munhequeira_PassaBola.postman_collection.json) no Postman para criar entidades no Orion e acompanhar os dados enviados pelo ESP32.  
 
 ---
 

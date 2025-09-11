@@ -272,7 +272,7 @@ void calcularCalorias() {
 
 void verificaParametrosFisiologicos() {
   // Define faixas seguras (consulte um profissional de saúde para valores reais)
-  const int BATIMENTO_MAXIMO = 100;
+  const int BATIMENTO_MAXIMO = 120;
   const int BATIMENTO_MINIMO = 60;
   const float TEMPERATURA_MAXIMA = 38.0; // 38°C pode indicar febre/overheating
 

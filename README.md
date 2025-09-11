@@ -2,7 +2,7 @@
 
 O projeto “Munhequeira Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
 
-### 📋 Integrantes do Projeto
+### 📋 Equipe SmoothPath
 
 - Geovana Maria da Silva Cardoso - 566254
 - Gabriel dos Santos Cardoso - 561203

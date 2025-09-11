@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "author": "Geovana Silva",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard-half", "id": "bb1", "top": -166.2, "left": -294.8, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 48, "left": -187.16, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -105.3,
+      "left": 42.6,
+      "attrs": { "temperature": "80" }
+    },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": 113.9, "left": -307.4, "attrs": {} },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 40.8,
+      "left": 107.4,
+      "attrs": { "volume": "0.1" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 42.35,
+      "left": -48,
+      "attrs": { "value": "10000" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "bb1:bp.1", "red", [ "h-124.65", "v-57.6", "h9.6" ] ],
+    [ "dht1:VCC", "bb1:bp.25", "red", [ "v0" ] ],
+    [ "esp:GND.2", "bb1:bn.16", "black", [ "v0" ] ],
+    [ "dht1:GND", "bb1:bn.25", "black", [ "v19.2", "h-76.8" ] ],
+    [ "pot1:GND", "bb1:bn.1", "black", [ "v9.6", "h-48", "v-134.4" ] ],
+    [ "pot1:VCC", "bb1:bp.5", "red", [ "v9.6", "h37.6" ] ],
+    [ "bz1:1", "bb1:bn.18", "black", [ "v-9.6", "h-76.8" ] ],
+    [ "dht1:SDA", "r1:2", "orange", [ "v0" ] ],
+    [ "dht1:SDA", "esp:15", "green", [ "v0" ] ],
+    [ "r1:1", "bb1:bp.20", "orange", [ "v0" ] ],
+    [ "esp:34", "pot1:SIG", "green", [ "h-19.05", "v86.4", "h-67.2" ] ],
+    [ "esp:25", "bz1:2", "violet", [ "v0", "h-28.65", "v115.2", "h364.8" ] ]
+  ],
+  "dependencies": {}
+}

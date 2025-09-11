@@ -108,6 +108,13 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 
 - Funções auxiliares: conexão Wi-Fi/MQTT, leitura de sensores, cálculo de calorias, ativação/desativação de alertas, publicação MQTT
 ---
+
+## 📎 Links Importantes
+🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
+🎥 [Vídeo Explicativo]()  
+🎥 [Vídeo da Simulação no Wokwi]()  
+
+---
 ### 📌 Referências
 
 Código original de: Fábio Henrique Cabrini

@@ -4,8 +4,8 @@
 // Atuador: Buzzer (Alerta)
 // Funcionalidade: Monitora parâmetros fisiológicos e publica via MQTT para FIWARE
 // Baseado no código original de: Fábio Henrique Cabrini
-/*Autores: Gabriel dos Santos Cardoso - 562103
 //Adaptado por: Equipe Smoothpath
+/*Autores: Gabriel dos Santos Cardoso - 562103
 //Geovana Maria da Silva Cardoso - 566254
 //Gustavo Torres Caldeira - 561613
 //Lucas Oliveira Santos - 563617

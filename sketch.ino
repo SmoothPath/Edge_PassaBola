@@ -4,6 +4,7 @@
 // Atuador: Buzzer (Alerta)
 // Funcionalidade: Monitora parâmetros fisiológicos e publica via MQTT para FIWARE
 // Baseado no código original de: Fábio Henrique Cabrini
+// Adaptado por: Equipe SmoothPath
 
 #include <WiFi.h>
 #include <PubSubClient.h>
@@ -24,7 +25,7 @@ const char* default_TOPICO_SUBSCRIBE = "/TEF/munhequeira001/cmd"; // Tópico par
 const char* default_TOPICO_PUBLISH = "/TEF/munhequeira001/attrs"; // Tópico para publicar ALL attributes
 
 // Definições dos pinos e sensores
-const int default_PINO_BUZZER = 2;     // Pino do Buzzer (Alerta)
+const int default_PINO_BUZZER = 25;    // Pino do Buzzer (Alerta)
 const int default_PINO_BATIMENTO = 34; // Pino do Potenciômetro (simula batimento)
 const int default_PINO_DHT = 15;       // Pino do DHT22 (Temperatura)
 #define DHTTYPE DHT22                  // Define o tipo de sensor DHT
@@ -219,18 +220,49 @@ void lerDadosSensores() {
 }
 
 void calcularCalorias() {
-  // Fórmula SIMPLES e exemplificativa para cálculo de calorias.
-  // EM UM PROJETO REAL, USE UMA FÓRMULA CIENTÍFICA (ex: Harris-Benedict + fator de atividade)
-  // Esta é apenas uma ilustração baseada no batimento e temperatura.
-  float fatorBatimento = (batimentoCardiaco - 60) / 10.0; // Fator arbitrário
-  float fatorTemperatura = (temperaturaCorporal - 36.0) / 0.5; // Fator arbitrário
-
-  // Incrementa as calorias com base nos fatores e no intervalo de tempo
-  caloriasGastas += (fatorBatimento + fatorTemperatura) * (INTERVALO_LEITURA / 1000.0) / 60.0;
-
+  // Constantes para cálculo baseado nos ranges dos sensores
+  const float TAXA_BASAL_MINUTO = 0.02f; // kcal por minuto (base para repouso)
+  const float FATOR_BATIMENTO = 0.02f;   // ajuste maior para tornar perceptível
+  const float FATOR_TEMPERATURA = 0.1f;  // ajuste maior para tornar perceptível
+  
+  // Valores médios de referência
+  const float BATIMENTO_MEDIO = 85.0f;
+  const float TEMPERATURA_MEDIA = 36.5f;
+  
+  // Garante valores dentro de ranges plausíveis
+  float batimentoAjustado = constrain(batimentoCardiaco, 50.0f, 120.0f);
+  float temperaturaAjustada = constrain(temperaturaCorporal, 35.0f, 39.0f);
+  
+  // Cálculo dos ajustes
+  float ajusteBatimento = (batimentoAjustado - BATIMENTO_MEDIO) * FATOR_BATIMENTO;
+  float ajusteTemperatura = (temperaturaAjustada - TEMPERATURA_MEDIA) * FATOR_TEMPERATURA;
+  
+  // Taxa metabólica total
+  float taxaMetabolica = TAXA_BASAL_MINUTO * (1.0f + ajusteBatimento + ajusteTemperatura);
+  
+  // Converte intervalo de leitura de ms para minutos
+  float minutos = (INTERVALO_LEITURA / 1000.0f) / 60.0f;
+  
+  // Para testes: multiplicar por 60 para simular 1 minuto a cada leitura
+  minutos *= 60;  // remove efeito de intervalo curto temporariamente
+  
+  // Incrementa calorias
+  caloriasGastas += taxaMetabolica * minutos;
+  caloriasGastas = max(caloriasGastas, 0.0f);
+  
   Serial.print("Calorias gastas estimadas: ");
-  Serial.println(caloriasGastas);
+  Serial.print(caloriasGastas, 2);
+  Serial.println(" kcal");
 }
+
+  
+  // Debug opcional dos cálculos
+  // Serial.print("Taxa metabólica: ");
+  // Serial.print(taxaMetabolica, 4);
+  // Serial.print(" kcal/min - Ajuste BPM: ");
+  // Serial.print(ajusteBatimento, 4);
+  // Serial.print(" - Ajuste Temp: ");
+  // Serial.println(ajusteTemperatura, 4);
 
 void verificaParametrosFisiologicos() {
   // Define faixas seguras (consulte um profissional de saúde para valores reais)
@@ -238,10 +270,10 @@ void verificaParametrosFisiologicos() {
   const int BATIMENTO_MINIMO = 60;
   const float TEMPERATURA_MAXIMA = 38.0; // 38°C pode indicar febre/overheating
 
-  bool batimentoAlerto = (batimentoCardiaco > BATIMENTO_MAXIMO) || (batimentoCardiaco < BATIMENTO_MINIMO);
+  bool batimentoAlerta = (batimentoCardiaco > BATIMENTO_MAXIMO) || (batimentoCardiaco < BATIMENTO_MINIMO);
   bool temperaturaAlerta = (temperaturaCorporal > TEMPERATURA_MAXIMA);
 
-  if (batimentoAlerto || temperaturaAlerta) {
+  if (batimentoAlerta || temperaturaAlerta) {
     Serial.println("ALERTA: Parâmetro fisiológico fora da faixa segura!");
     ativarAlerta();
     alertaAtivo = true;
@@ -255,31 +287,33 @@ void verificaParametrosFisiologicos() {
 }
 
 void ativarAlerta() {
-  // Faz o buzzer tocar intermitentemente
-  digitalWrite(PINO_BUZZER, HIGH);
-  delay(500); // Tempo ligado
-  digitalWrite(PINO_BUZZER, LOW);
-  delay(500); // Tempo desligado
-  // Nota: Esta função é chamada a cada loop de leitura, mantendo o buzzer piscando.
+  tone(PINO_BUZZER, 1000, 500); // 1000 Hz (tom de alerta) por meio segundo
 }
 
 void desativarAlerta() {
-  digitalWrite(PINO_BUZZER, LOW); // Desliga o buzzer
+  noTone(PINO_BUZZER);
 }
 
 void publicaDadosMQTT() {
   // Formata a mensagem no padrão esperado pelo IoT Agent JSON
-  // Atributos separados por '|' e pares de valor-atributo separados por '#'
-  // Ex: "b|60#t|36.5#c|105.3"
   String mensagem = "b|" + String(batimentoCardiaco) +
-                    "#t|" + String(temperaturaCorporal) +
-                    "#c|" + String(caloriasGastas);
+                    "#t|" + String(temperaturaCorporal, 1) + // 1 casa decimal
+                    "#c|" + String(caloriasGastas, 2); // 2 casas decimais
 
   // Adiciona o status de alerta à mensagem, se necessário
-  // if(alertaAtivo) { mensagem += "#a|on"; } else { mensagem += "#a|off"; }
+  if(alertaAtivo) { mensagem += "#a|on"; } else { mensagem += "#a|off"; }
+                  
 
   // Publica a mensagem no tópico
   MQTT.publish(TOPICO_PUBLISH, mensagem.c_str());
-  Serial.print("Dados publicados: ");
-  Serial.println(mensagem);
+  
+   // Apresentação clara no Serial Terminal
+  Serial.println("┌──────────────────────────────────────");
+  Serial.println("│           DADOS MQTT ENVIADOS        ");
+  Serial.println("├──────────────────────────────────────");
+  Serial.printf ("│ BPM: %3d │  Temp: %4.1f°C\n", batimentoCardiaco, temperaturaCorporal);
+  Serial.printf ("│ Calorias: %6.2f kcal\n", caloriasGastas);
+  Serial.printf ("│ Mensagem: %s\n", mensagem.c_str());
+  Serial.printf ("│  Tópico: %s\n", TOPICO_PUBLISH);
+  Serial.println("└──────────────────────────────────────");
 }

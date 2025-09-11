@@ -1,7 +1,7 @@
 # Munhequeira Monitora – Passa a Bola
 
 O projeto “Munhequeira Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
-
+---
 ### 📋 Equipe SmoothPath
 
 - Geovana Maria da Silva Cardoso - 566254
@@ -10,6 +10,7 @@ O projeto “Munhequeira Monitora – Passa a Bola” é um dispositivo vestíve
 - Lucas Oliveira Santos - 563617
 - Mariana Silva do Egito Moreira - 562544
 - 1ESPF - Engenharia de Software
+---
 
 ### 🛠️ Componentes e Sensores
 
@@ -21,8 +22,8 @@ O projeto “Munhequeira Monitora – Passa a Bola” é um dispositivo vestíve
 
 - Buzzer – alerta sonoro quando parâmetros estão fora da faixa segura
 
-O sistema também calcula a quantidade estimada de calorias gastas com base nos dados coletados.
-
+- O sistema também calcula a quantidade estimada de calorias gastas com base nos dados coletados.
+---
 ### 🌐 Arquitetura IoT com FIWARE
 
 A solução foi projetada para funcionar de forma integrada com o FIWARE, utilizando seus Generic Enablers (GEs) em uma máquina virtual (VM).
@@ -40,12 +41,13 @@ Fluxo de dados:
 - MongoDB Internal: banco interno do Orion para persistência de entidades.
 
 - STH-Comet + MongoDB Historical: registram histórico de dados, permitindo análises de séries temporais.
-
+---
 ### 📊 Diagrama da Arquitetura
 
 
 ![Arquitetura do Projeto](arqMunhe.png)
 
+---
 ### ⚙️ Funcionalidades do Dispositivo
 
 - Monitoramento de batimentos cardíacos em tempo real
@@ -59,7 +61,7 @@ Fluxo de dados:
 - Publicação contínua de dados no broker MQTT, compatível com FIWARE
 
 - Recepção de comandos MQTT, como desativar alerta remotamente
-
+---
 ### 🔧 Configurações Editáveis
 
 - Wi-Fi: SSID e PASSWORD
@@ -69,7 +71,7 @@ Fluxo de dados:
 - Sensores: pinos do potenciômetro (batimentos), DHT22 (temperatura) e buzzer
 
 - Intervalo de leitura: tempo entre leituras dos sensores (padrão 2s)
-
+---
 ### 🧪 Testes e Validação
 
 Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementação física
@@ -83,7 +85,7 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 - Verificação de histórico via STH-Comet
 
 - Simulação de inserção de dados MQTT
-
+---
 ### ✅ Benefícios do Sistema
 
 - Monitoramento em tempo real dos parâmetros fisiológicos
@@ -95,7 +97,7 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 - Escalabilidade, permitindo monitorar múltiplos atletas simultaneamente
 
 - Flexibilidade para integração com dashboards ou sistemas externos
-
+---
 ### 📁 Estrutura do Código
 
 - Configurações: rede Wi-Fi, MQTT e sensores
@@ -105,7 +107,7 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 - Loop principal: leitura de sensores, cálculo de calorias, verificação de parâmetros, envio MQTT
 
 - Funções auxiliares: conexão Wi-Fi/MQTT, leitura de sensores, cálculo de calorias, ativação/desativação de alertas, publicação MQTT
-
+---
 ### 📌 Referências
 
 Código original de: Fábio Henrique Cabrini

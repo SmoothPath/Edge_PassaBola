@@ -150,8 +150,6 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
   - Gire o potenciômetro para valores próximos de 120 BPM.  
 - **Simular febre**:  
   - Aumente a temperatura do DHT22 para > 38.5°C.  
-- **Simular hipotermia**:  
-  - Reduza a temperatura para < 35.0°C.  
 - **Verificar calorias**:  
   - Deixe a simulação rodando e acompanhe o cálculo de calorias no Serial Monitor.  
 

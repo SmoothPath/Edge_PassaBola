@@ -1,6 +1,6 @@
-# Munhequeira Monitora – Passa a Bola
+# Cinta Monitora – Passa a Bola
 
-O projeto “Munhequeira Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
+O projeto “Cinta Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
 ---
 ### 📋 Equipe SmoothPath
 
@@ -45,7 +45,7 @@ Fluxo de dados:
 ### 📊 Diagrama da Arquitetura
 
 
-![Arquitetura do Projeto](arqMunhe.png)
+![Arquitetura do Projeto](arqCinta.png)
 
 ---
 ### ⚙️ Funcionalidades do Dispositivo
@@ -168,7 +168,7 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 
 1. Configure o IP do **broker MQTT** no código.  
 2. Inicie os componentes na VM: Mosquitto, IoT Agent MQTT, Orion e STH-Comet.  
-3. Instale e importe a [Collection Munhequeira](Munhequeira_PassaBola.postman_collection.json) no Postman para criar entidades no Orion e acompanhar os dados enviados pelo ESP32.  
+3. Instale e importe a [Collection Cinta](Munhequeira_PassaBola.postman_collection.json) no Postman para criar entidades no Orion e acompanhar os dados enviados pelo ESP32.  
 
 ---
 
@@ -182,3 +182,5 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 Código original de: Fábio Henrique Cabrini
 
 Adaptado para o projeto Passa a Bola por: Equipe SmoothPath
+
+Observação: O código e a collection do Postman possuem referências a "Munhequeira Monitora", que era a ideia inicial da equipe. 

@@ -1,6 +1,7 @@
 # Cinta Monitora – Passa a Bola
 
 O projeto “Cinta Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
+Acesse o vídeo explicativo aqui: 🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR) 
 ---
 ### 📋 Equipe SmoothPath
 
@@ -111,8 +112,8 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 
 ## 📎 Links Importantes
 🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
-🎥 [Vídeo Explicativo]()  
-🎥 [Vídeo da Simulação no Wokwi]() 
+🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)  
+🎥 [Vídeo da Simulação no Wokwi](https://youtu.be/E-yGx4KFckI?si=Hl1_GvQSrDYp_cuS) 
 
 ---
 

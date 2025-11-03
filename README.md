@@ -21,7 +21,7 @@ O projeto “Cinta Monitora – Passa a Bola” é um dispositivo vestível IoT 
 - **Buzzer** – alerta sonoro quando parâmetros estão fora da faixa segura
 - Sistema calcula a quantidade estimada de calorias gastas com base nos dados coletados
 
-![Montagem do Projeto](./assets/dispWokwi.png)
+![Montagem do Projeto](disp_Wokwi.png)
 
 ---
 ### 🌐 Arquitetura IoT com FIWARE
@@ -37,7 +37,7 @@ A solução integra o **ESP32** com **FIWARE**, utilizando seus Generic Enablers
 5. **MongoDB Internal**: persistência de entidades
 6. **STH-Comet + MongoDB Historical**: registro histórico para análise de séries temporais
 
-![Arquitetura do Projeto](./assets/arqCinta.png)
+![Arquitetura do Projeto](arqCinta.png)
 
 ---
 ### ⚙️ Funcionalidades do Dispositivo
@@ -56,29 +56,27 @@ A solução integra o **ESP32** com **FIWARE**, utilizando seus Generic Enablers
 ---
 ## 🎥 Apresentação da ideia do Projeto
 
-[![Vídeo Explicação](./assets/video_thumbnail.png)](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)
+[![Vídeo Explicação](thumbApre.png)](https://youtu.be/YxBPRMQJT8o)
 
-## 🎥 Demonstração do Projeto
+## 🎥 Demonstração do Projeto integrado à Plataforma Passa a Bola em Funcionamento
 
-Insira aqui o vídeo explicativo:
-
-[![Vídeo Demonstração](caminho/para/thumbnail.png)](URL_DO_VIDEO)
+[![Vídeo Demonstração](disp_Wokwi.png)](https://youtu.be/yop7ESs_mIc)
 
 ---
 
 # 📊 Dashboard Dinâmico
 
 ### Tela Principal
-![Tela Principal](./assets/print1.png)
+![Tela Principal](telaini.png)
 
 ### Gráfico de Batimentos Cardíacos
-![Batimentos Cardíacos](./assets/print2.png)
+![Batimentos Cardíacos](graficoBatCar.png)
 
 ### Gráfico de Temperatura
-![Temperatura](./assets/print3.png)
+![Temperatura](graficoTemp.png)
 
 ### Gráfico de Calorias
-![Calorias](./assets/print4.png)
+![Calorias](graficoCal.png)
 
 
 ---
@@ -152,9 +150,12 @@ ESP32 → MQTT → Backend → Frontend → Comandos MQTT → ESP32
 ---
 
 ## 📎 Links Importantes
-- 🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
-- 🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)  
-- 🎥 [Vídeo da Simulação no Wokwi](https://youtu.be/E-yGx4KFckI?si=Hl1_GvQSrDYp_cuS) 
+- 🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)
+  
+- 🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)
+  
+- 🎥 [Vídeo do Funcionamento do Projeto integrado à Plataforma Passa a Bola](https://youtu.be/yop7ESs_mIc)
+  
 - 📂 [Collection Postman](./assets/Munhequeira_PassaBola.postman_collection.json)
 
 ---

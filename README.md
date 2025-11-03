@@ -56,11 +56,11 @@ A solução integra o **ESP32** com **FIWARE**, utilizando seus Generic Enablers
 ---
 ## 🎥 Apresentação da ideia do Projeto
 
-[![Vídeo Explicação](thumbApre.png)](https://youtu.be/YxBPRMQJT8o)
+[Vídeo Explicação](https://youtu.be/YxBPRMQJT8o)
 
 ## 🎥 Demonstração do Projeto integrado à Plataforma Passa a Bola em Funcionamento
 
-[![Vídeo Demonstração](disp_Wokwi.png)](https://youtu.be/yop7ESs_mIc)
+[Vídeo Demonstração](https://youtu.be/yop7ESs_mIc)
 
 ---
 

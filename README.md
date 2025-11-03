@@ -1,7 +1,7 @@
 # Cinta Monitora – Passa a Bola
 
 O projeto “Cinta Monitora – Passa a Bola” é um dispositivo vestível IoT desenvolvido para monitorar a saúde de atletas durante treinos e jogos, acompanhando batimentos cardíacos, temperatura corporal e calorias gastas, com alertas sonoros quando os parâmetros estiverem fora da faixa segura.
-Acesse o vídeo explicativo aqui: 🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR) 
+ 
 ---
 ### 📋 Equipe SmoothPath
 
@@ -15,38 +15,29 @@ Acesse o vídeo explicativo aqui: 🎥 [Vídeo Explicativo](https://youtu.be/YxB
 
 ### 🛠️ Componentes e Sensores
 
-- ESP32 DevKit – microcontrolador principal
+- **ESP32 DevKit** – microcontrolador principal
+- **Potenciômetro** – simula batimentos cardíacos
+- **DHT22** – sensor de temperatura corporal
+- **Buzzer** – alerta sonoro quando parâmetros estão fora da faixa segura
+- Sistema calcula a quantidade estimada de calorias gastas com base nos dados coletados
 
-- Potenciômetro – simula batimentos cardíacos
+![Montagem do Projeto](./assets/dispWokwi.png)
 
-- DHT22 – sensor de temperatura corporal
-
-- Buzzer – alerta sonoro quando parâmetros estão fora da faixa segura
-
-- O sistema também calcula a quantidade estimada de calorias gastas com base nos dados coletados.
 ---
 ### 🌐 Arquitetura IoT com FIWARE
 
-A solução foi projetada para funcionar de forma integrada com o FIWARE, utilizando seus Generic Enablers (GEs) em uma máquina virtual (VM).
+A solução integra o **ESP32** com **FIWARE**, utilizando seus Generic Enablers (GEs) em uma máquina virtual (VM).
 
-Fluxo de dados:
+### Fluxo de Dados
 
-- Dispositivo ESP32: coleta batimentos e temperatura e publica via MQTT.
+1. **ESP32**: coleta batimentos, temperatura e calorias, publica via MQTT
+2. **MQTT Broker (Mosquitto)**: recebe mensagens dos dispositivos
+3. **IoT Agent MQTT**: traduz dados MQTT para entidades NGSI
+4. **Orion Context Broker**: armazena e disponibiliza o contexto atual de cada atleta
+5. **MongoDB Internal**: persistência de entidades
+6. **STH-Comet + MongoDB Historical**: registro histórico para análise de séries temporais
 
-- MQTT Broker (Mosquitto): recebe mensagens dos dispositivos.
-
-- IoT Agent MQTT: traduz os dados MQTT para entidades NGSI.
-
-- Orion Context Broker: armazena e disponibiliza o contexto atual de cada atleta.
-
-- MongoDB Internal: banco interno do Orion para persistência de entidades.
-
-- STH-Comet + MongoDB Historical: registram histórico de dados, permitindo análises de séries temporais.
----
-### 📊 Diagrama da Arquitetura
-
-
-![Arquitetura do Projeto](arqCinta.png)
+![Arquitetura do Projeto](./assets/arqCinta.png)
 
 ---
 ### ⚙️ Funcionalidades do Dispositivo
@@ -63,29 +54,83 @@ Fluxo de dados:
 
 - Recepção de comandos MQTT, como desativar alerta remotamente
 ---
+## 🎥 Apresentação da ideia do Projeto
+
+[![Vídeo Explicação](./assets/video_thumbnail.png)](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)
+
+## 🎥 Demonstração do Projeto
+
+Insira aqui o vídeo explicativo:
+
+[![Vídeo Demonstração](caminho/para/thumbnail.png)](URL_DO_VIDEO)
+
+---
+
+# 📊 Dashboard Dinâmico
+
+### Tela Principal
+![Tela Principal](./assets/print1.png)
+
+### Gráfico de Batimentos Cardíacos
+![Batimentos Cardíacos](./assets/print2.png)
+
+### Gráfico de Temperatura
+![Temperatura](./assets/print3.png)
+
+### Gráfico de Calorias
+![Calorias](./assets/print4.png)
+
+
+---
+
+## Funcionamento do Sistema
+
+### Frontend (Dashboard Web)
+- Exibe os dados de **batimentos cardíacos, temperatura corporal e calorias**.
+- Atualiza automaticamente os dados a cada 10 segundos.
+- Mostra a **última mensagem recebida via MQTT** do ESP32.
+- Permite enviar comandos para o ESP32, como **desativar alertas**, diretamente pelo dashboard.
+- Destaca **faixas seguras** nos gráficos para facilitar a interpretação.
+
+### Backend (API Express + MQTT + STH-Comet)
+- Recebe dados do **ESP32 via MQTT**.
+- Consulta o **STH-Comet**, que armazena histórico de dados dos sensores.
+- Fornece endpoints que retornam os dados para o frontend.
+- Permite o envio de **comandos MQTT para o ESP32**, que podem ativar ou desativar alertas no dispositivo.
+
+### Fluxo de Dados
+1. O **ESP32** coleta os sensores de batimento, temperatura e calorias.
+2. Os dados são enviados para o **broker MQTT**.
+3. O **backend** consome esses dados e consulta também o **STH-Comet** para histórico.
+4. O **frontend** requisita os dados do backend e atualiza os gráficos em tempo real.
+5. Comandos enviados pelo dashboard (ex: desativar alerta) são publicados via MQTT de volta para o ESP32.
+
+---
+
+### Fluxo de Dados Resumido
+ESP32 → MQTT → Backend → Frontend → Comandos MQTT → ESP32
+
+---
 ### 🔧 Configurações Editáveis
 
-- Wi-Fi: SSID e PASSWORD
+ **Wi-Fi**: SSID e PASSWORD
+- **MQTT**: IP do broker, porta, tópicos de publicação/assinatura, ID do dispositivo
+- **Sensores**: pinos do potenciômetro, DHT22 e buzzer
+- **Intervalo de leitura**: tempo entre leituras dos sensores (padrão 2s)
 
-- MQTT: IP do broker, porta, tópicos de publicação e assinatura, ID do dispositivo
-
-- Sensores: pinos do potenciômetro (batimentos), DHT22 (temperatura) e buzzer
-
-- Intervalo de leitura: tempo entre leituras dos sensores (padrão 2s)
 ---
-### 🧪 Testes e Validação
+## 🧪 Testes e Validação
 
-Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementação física
+### Testes do Dispositivo (Wokwi)
+- Simulação do ESP32, sensores e buzzer
+- Verificação de logs no Serial Monitor
 
-- Postman: testes de integração com FIWARE, incluindo:
-
+### Testes da Integração (Postman + FIWARE)
 - Criação de entidades no Orion Context Broker
-
 - Consulta de dados em tempo real
-
 - Verificação de histórico via STH-Comet
-
 - Simulação de inserção de dados MQTT
+
 ---
 ### ✅ Benefícios do Sistema
 
@@ -99,21 +144,18 @@ Simulação Wokwi: validação do ESP32, sensores e buzzer antes da implementaç
 
 - Flexibilidade para integração com dashboards ou sistemas externos
 ---
-### 📁 Estrutura do Código
-
-- Configurações: rede Wi-Fi, MQTT e sensores
-
-- Inicializações: serial, Wi-Fi, MQTT e sensores
-
-- Loop principal: leitura de sensores, cálculo de calorias, verificação de parâmetros, envio MQTT
-
-- Funções auxiliares: conexão Wi-Fi/MQTT, leitura de sensores, cálculo de calorias, ativação/desativação de alertas, publicação MQTT
+## 📁 Estrutura do Código
+- **Configurações**: rede Wi-Fi, MQTT e sensores
+- **Inicializações**: serial, Wi-Fi, MQTT e sensores
+- **Loop principal**: leitura de sensores, cálculo de calorias, verificação de parâmetros, envio MQTT
+- **Funções auxiliares**: conexão Wi-Fi/MQTT, leitura de sensores, cálculo de calorias, ativação/desativação de alertas, publicação MQTT
 ---
 
 ## 📎 Links Importantes
-🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
-🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)  
-🎥 [Vídeo da Simulação no Wokwi](https://youtu.be/E-yGx4KFckI?si=Hl1_GvQSrDYp_cuS) 
+- 🔗 [Projeto no Wokwi](https://wokwi.com/projects/441652276593761281)  
+- 🎥 [Vídeo Explicativo](https://youtu.be/YxBPRMQJT8o?si=03e3teHxXzNvUPPR)  
+- 🎥 [Vídeo da Simulação no Wokwi](https://youtu.be/E-yGx4KFckI?si=Hl1_GvQSrDYp_cuS) 
+- 📂 [Collection Postman](./assets/Munhequeira_PassaBola.postman_collection.json)
 
 ---
 

@@ -1,4 +1,4 @@
-// Projeto: Munhequeira Monitora - Passa a Bola
+/// Projeto: Cinta Monitora - Passa a Bola
 // Dispositivo: ESP32
 // Sensores: Potenciometro (Batimento Cardíaco), DHT22 (Temperatura Corporal)
 // Atuador: Buzzer (Alerta)
@@ -36,8 +36,9 @@ const int default_PINO_BATIMENTO = 34; // Pino do Potenciômetro (simula batimen
 const int default_PINO_DHT = 15;       // Pino do DHT22 (Temperatura)
 #define DHTTYPE DHT22                  // Define o tipo de sensor DHT
 
+
 // Intervalos de leitura e publicação
-const int default_INTERVALO_LEITURA = 2000; // Lê sensores a cada 2 segundos
+const int default_INTERVALO_LEITURA = 5000; // Lê sensores a cada 5 segundos
 
 // ==================== DECLARAÇÃO DE VARIÁVEIS ====================
 // Variáveis para configurações (permitem alteração em runtime se necessário)
@@ -54,6 +55,7 @@ int PINO_BATIMENTO = default_PINO_BATIMENTO;
 int PINO_DHT = default_PINO_DHT;
 int INTERVALO_LEITURA = default_INTERVALO_LEITURA;
 
+
 // Instância dos objetos
 WiFiClient espClient;
 PubSubClient MQTT(espClient);
@@ -65,6 +67,8 @@ float temperaturaCorporal = 0.0;
 float caloriasGastas = 0.0;
 bool alertaAtivo = false;
 unsigned long ultimaLeitura = 0;
+bool alertaSilenciado = false; // Variável global
+
 
 // ==================== PROTÓTIPOS DE FUNÇÃO ====================
 void initSerial();
@@ -79,6 +83,8 @@ void publicaDadosMQTT();
 void verificaParametrosFisiologicos();
 void ativarAlerta();
 void desativarAlerta();
+void lerDadosSensores();
+void calcularCalorias();
 
 // ==================== SETUP ====================
 void setup() {
@@ -131,9 +137,10 @@ void initSensores() {
   pinMode(PINO_BUZZER, OUTPUT);
   digitalWrite(PINO_BUZZER, LOW); // Garante que o buzzer comece desligado
   pinMode(PINO_BATIMENTO, INPUT); // Pino do potenciômetro é entrada analógica
-
+  
   dht.begin(); // Inicializa o sensor DHT22
   Serial.println("Sensores inicializados.");
+
 
   // Sinalização de inicialização com o buzzer
   for (int i = 0; i < 3; i++) {
@@ -175,12 +182,11 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
   // Você pode definir comandos para silenciar o buzzer remotamente, etc.
   if (msg.indexOf("alertaOff") >= 0) {
     Serial.println("Comando recebido: Desativar Alerta");
-    desativarAlerta(); // Função para desativar o buzzer
-    // Pode publicar uma confirmação se necessário
-    // MQTT.publish(TOPICO_PUBLISH, "alerta|off");
+    alertaSilenciado = true; // Desativa temporariamente
+    desativarAlerta();
+    MQTT.publish(TOPICO_PUBLISH, "alerta|off");
   }
-  // Adicione outros comandos conforme a necessidade
-  // else if (msg.indexOf("outroComando") >= 0) { ... }
+  
 }
 
 void VerificaConexoesWiFIEMQTT() {
@@ -261,15 +267,6 @@ void calcularCalorias() {
   Serial.println(" kcal");
 }
 
-  
-  // Debug opcional dos cálculos
-  // Serial.print("Taxa metabólica: ");
-  // Serial.print(taxaMetabolica, 4);
-  // Serial.print(" kcal/min - Ajuste BPM: ");
-  // Serial.print(ajusteBatimento, 4);
-  // Serial.print(" - Ajuste Temp: ");
-  // Serial.println(ajusteTemperatura, 4);
-
 void verificaParametrosFisiologicos() {
   // Define faixas seguras (consulte um profissional de saúde para valores reais)
   const int BATIMENTO_MAXIMO = 120;
@@ -279,36 +276,41 @@ void verificaParametrosFisiologicos() {
   bool batimentoAlerta = (batimentoCardiaco > BATIMENTO_MAXIMO) || (batimentoCardiaco < BATIMENTO_MINIMO);
   bool temperaturaAlerta = (temperaturaCorporal > TEMPERATURA_MAXIMA);
 
-  if (batimentoAlerta || temperaturaAlerta) {
-    Serial.println("ALERTA: Parâmetro fisiológico fora da faixa segura!");
-    ativarAlerta();
-    alertaAtivo = true;
-  } else {
-    if (alertaAtivo) {
-      Serial.println("Parâmetros normalizados. Alerta desativado.");
-      desativarAlerta();
-      alertaAtivo = false;
+  // Se algum parâmetro está fora da faixa
+    if (batimentoAlerta || temperaturaAlerta) {
+        if (!alertaSilenciado) {
+            ativarAlerta();
+            alertaAtivo = true;
+        } else {
+            Serial.println("Alerta silenciado temporariamente.");
+        }
+    } else {
+        // Parâmetros normalizados, garante que buzzer desligue
+        if (alertaAtivo) {
+            desativarAlerta();
+            alertaAtivo = false;
+        }
     }
-  }
+
+    // Sempre resetamos o silenciamento para a próxima leitura
+    alertaSilenciado = false;
 }
 
 void ativarAlerta() {
-  tone(PINO_BUZZER, 1000, 500); // 1000 Hz (tom de alerta) por meio segundo
+  tone(PINO_BUZZER, 1000, 3000); // 1000 Hz (tom de alerta) por meio segundo 
 }
 
 void desativarAlerta() {
-  noTone(PINO_BUZZER);
+  noTone(PINO_BUZZER); 
 }
 
 void publicaDadosMQTT() {
-  // Formata a mensagem no padrão esperado pelo IoT Agent JSON
-  String mensagem = "b|" + String(batimentoCardiaco) +
-                    "#t|" + String(temperaturaCorporal, 1) + // 1 casa decimal
-                    "#c|" + String(caloriasGastas, 2); // 2 casas decimais
-
-  // Adiciona o status de alerta à mensagem, se necessário
-  if(alertaAtivo) { mensagem += "#a|on"; } else { mensagem += "#a|off"; }
-                  
+  // Formata a mensagem no padrão UltraLight esperado pelo IoT Agent
+  // USANDO OS OBJECT_ID DEFINIDOS NA PROVISION: b, t, c, s
+  String mensagem = "b|" + String(batimentoCardiaco) + 
+                    "|t|" + String(temperaturaCorporal, 1) + 
+                    "|c|" + String(caloriasGastas, 2) + 
+                    "|s|on";
 
   // Publica a mensagem no tópico
   MQTT.publish(TOPICO_PUBLISH, mensagem.c_str());
